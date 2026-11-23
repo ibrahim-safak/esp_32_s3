@@ -1,0 +1,51 @@
+1. Projeleri Nerede Tutmalı ve Klasör Yapısı Nasıl?
+PlatformIO varsayılan olarak projelerini ~/Documents/PlatformIO/Projects/ altında tutar, ancak istersen kendi Git/projeler klasöründe de açabilirsin. Önemli olan proje klasörünün içindeki yapıdır:
+
+src/: Asıl C++ kodların (main.cpp ve diğer .cpp dosyaların) burada durur.
+
+include/: Kendi yazdığın başlık dosyalarını (.h / .hpp) buraya koyarsın.
+
+lib/: Sadece bu projeye özel, kendin yazdığın veya dışarıdan manuel eklediğin kütüphaneler içindir.
+
+platformio.ini: Projenin beynidir. Kart modeli, seri port hızı (monitor_speed), harici kütüphaneler ve derleyici bayrakları (build_flags) buradan yönetilir.
+
+İpucu: Yeni bir projeye geçmek istediğinde VS Code'da File - Open Folder diyerek sadece o projenin klasörünü açman yeterlidir.
+
+2. VS Code + PlatformIO Günlük Kullanım
+Kod yazarken en çok kullanacağın araçlar VS Code'un en altındaki durum çubuğunda yer alır:
+
+Tik İşareti (Build): Kodu karta yüklemeden sadece derler ve sözdizimi/derleme hatalarını kontrol eder. (Kısayol: Ctrl + Alt + B)
+
+Sağ Ok (Upload): Kodu derler ve USB üzerinden ESP32-S3'e yükler. (Kısayol: Ctrl + Alt + U)
+
+Priz / Fiş (Serial Monitor): Karttan Serial.println() ile gelen çıktıları canlı izlersin. (Kısayol: Ctrl + Alt + S)
+
+Çöp Kutusu (Clean): Önceki derlemeden kalan geçici dosyaları temizler. Garip derleme hataları alırsan bir kez temizleyip tekrar Build almak sorunu çözer.
+
+Daha gelişmiş işlemler için (örneğin Upload and Monitor ile tek tıkla hem yükleyip hem monitörü açmak veya Erase Flash ile kartın hafızasını sıfırlamak) sol menüdeki Uzaylı (PlatformIO) ikonu - Project Tasks bölümünü kullanabilirsin.
+
+3. Paket / Kütüphane (Library) Nasıl Alınır?
+Sensör, ekran, Wi-Fi veya JSON gibi harici kütüphaneleri eklemenin iki yolu vardır:
+
+Yöntem 1: Arayüzden Ekleme (Hızlı)
+
+Sol menüdeki Uzaylı (PlatformIO) ikonuna tıkla ve PIO Home - Open yolunu izle.
+
+Soldan Libraries sekmesine gir, aradığın kütüphaneyi (örneğin Adafruit NeoPixel veya ArduinoJson) arat.
+
+Kütüphaneye tıklayıp Add to Project butonuna bas ve kendi projeni seç.
+
+Yöntem 2: platformio.ini Üzerinden Ekleme (Profesyonel Yöntem)
+Kütüphaneyi arayüzden eklediğinde aslında arka planda platformio.ini dosyasına lib_deps satırı eklenir. Bunu doğrudan kendin de yazabilirsin:
+
+Ini, TOML
+[env:esp32-s3-devkitc-1]
+platform = espressif32
+board = esp32-s3-devkitc-1
+framework = arduino
+monitor_speed = 115200
+
+lib_deps =
+    bblanchon/ArduinoJson @ ^7.0.0
+    adafruit/Adafruit NeoPixel @ ^1.12.0
+Dosyayı kaydettiğinde (Ctrl + S) PlatformIO bu paketleri otomatik olarak indirip projene bağlar. Projeyi GitHub'a attığında kütüphane dosyalarını yüklemene gerek kalmaz; başka bir bilgisayarda açtığında platformio.ini sayesinde her şey otomatik kurulur.
